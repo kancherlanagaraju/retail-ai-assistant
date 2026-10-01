@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  retail-ai-assistant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: retail-ai-assistant
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL_NAME=gpt-4-turbo-preview
+      - TEMPERATURE=0.7
+      - MAX_TOKENS=2048
+      - CHROMA_DB_PATH=/app/chromadb_data
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=False
+      - LOG_LEVEL=INFO
+      - MAX_ITERATIONS=10
+      - TIMEOUT_SECONDS=30
+    volumes:
+      - ./chromadb_data:/app/chromadb_data
+      - ./data:/app/data
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - retail-network
+    depends_on:
+      - chroma-db
+
+  chroma-db:
+    image: chromadb/chroma:latest
+    container_name: chroma-db
+    ports:
+      - "8001:8000"
+    environment:
+      - IS_PERSISTENT=TRUE
+      - CHROMA_HOST_TYPE=fastapi
+    volumes:
+      - chroma-data:/chroma/data
+    networks:
+      - retail-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
+volumes:
+  chroma-data:
+    driver: local
+
+networks:
+  retail-network:
+    driver: bridge
+
+# Usage:
+# docker-compose up -d                 # Start all services
+# docker-compose down                  # Stop all services
+# docker-compose logs -f retail-ai-assistant # View logs
+# docker-compose ps                    # Check status
