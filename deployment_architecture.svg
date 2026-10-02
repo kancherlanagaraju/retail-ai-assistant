@@ -1,0 +1,257 @@
+<svg viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --secondary: #10b981;
+        --accent: #f59e0b;
+        --danger: #ef4444;
+        --purple: #8b5cf6;
+        --neutral: #6b7280;
+        --light: #f3f4f6;
+        --border: #d1d5db;
+      }
+      .box { fill: white; stroke: var(--border); stroke-width: 2; rx: 4; }
+      .box-primary { fill: var(--primary); }
+      .box-secondary { fill: var(--secondary); }
+      .box-accent { fill: var(--accent); }
+      .box-danger { fill: var(--danger); }
+      .box-purple { fill: var(--purple); }
+      .title { font-weight: bold; font-size: 12px; }
+      .label { font-size: 10px; fill: var(--neutral); }
+      .text-light { fill: white; }
+      .arrow { stroke: var(--primary); stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-ci { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 4,4; marker-end: url(#arrowhead-ci); }
+      .layer-title { font-size: 14px; font-weight: bold; fill: var(--primary); }
+      .section-title { font-size: 13px; font-weight: bold; fill: var(--secondary); }
+      .container-box { fill: none; stroke: var(--secondary); stroke-width: 2; stroke-dasharray: 5,5; rx: 4; }
+      .divider { stroke: var(--border); stroke-width: 1; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="var(--primary)"/>
+    </marker>
+    <marker id="arrowhead-ci" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="var(--accent)"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="30" class="layer-title" text-anchor="middle" font-size="18">Retail AI Assistant - Deployment Architecture</text>
+
+  <!-- DEVELOPMENT -->
+  <text x="60" y="70" class="section-title">LOCAL DEVELOPMENT</text>
+  <rect x="40" y="85" width="220" height="140" class="box"/>
+  <text x="150" y="105" class="title" text-anchor="middle">Developer Machine</text>
+  <text x="150" y="125" class="label" text-anchor="middle">Python 3.14 venv</text>
+
+  <rect x="55" y="135" width="95" height="35" class="box box-primary"/>
+  <text x="102.5" y="150" class="title text-light" text-anchor="middle">FastAPI</text>
+  <text x="102.5" y="163" class="label text-light" text-anchor="middle">:8000</text>
+
+  <rect x="165" y="135" width="85" height="35" class="box box-secondary"/>
+  <text x="207.5" y="150" class="title text-light" text-anchor="middle">Streamlit</text>
+  <text x="207.5" y="163" class="label text-light" text-anchor="middle">:8501</text>
+
+  <text x="150" y="195" class="label" text-anchor="middle">./vectorstore/</text>
+  <text x="150" y="210" class="label" text-anchor="middle">SQLite ChromaDB</text>
+
+  <!-- GIT -->
+  <text x="330" y="70" class="section-title">SOURCE CONTROL</text>
+  <rect x="310" y="85" width="180" height="140" class="box"/>
+  <text x="400" y="105" class="title" text-anchor="middle">GitHub Repository</text>
+
+  <rect x="325" y="130" width="75" height="35" class="box box-accent"/>
+  <text x="362.5" y="152" class="label text-light" text-anchor="middle">main branch</text>
+
+  <rect x="410" y="130" width="75" height="35" class="box box-accent"/>
+  <text x="447.5" y="152" class="label text-light" text-anchor="middle">dev branch</text>
+
+  <text x="400" y="190" class="label" text-anchor="middle">kancherlanagaraju/</text>
+  <text x="400" y="205" class="label" text-anchor="middle">retail-ai-assistant</text>
+
+  <!-- CI/CD -->
+  <text x="630" y="70" class="section-title">CI/CD PIPELINE</text>
+  <rect x="610" y="85" width="220" height="140" class="box"/>
+  <text x="720" y="105" class="title" text-anchor="middle">GitHub Actions</text>
+
+  <rect x="625" y="130" width="90" height="35" class="box box-purple"/>
+  <text x="670" y="150" class="label text-light" text-anchor="middle">Unit Tests</text>
+  <text x="670" y="163" class="label text-light" text-anchor="middle">pytest</text>
+
+  <rect x="725" y="130" width="100" height="35" class="box box-purple"/>
+  <text x="775" y="150" class="label text-light" text-anchor="middle">Lint & Type</text>
+  <text x="775" y="163" class="label text-light" text-anchor="middle">mypy</text>
+
+  <text x="720" y="190" class="label" text-anchor="middle">✓ 13/13 tests passing</text>
+  <text x="720" y="205" class="label" text-anchor="middle">✓ Docker build</text>
+
+  <!-- Arrows from Dev to Git -->
+  <path d="M 260 155 L 310 155" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="285" y="150" class="label" text-anchor="middle">git push</text>
+
+  <!-- Arrows from Git to CI/CD -->
+  <path d="M 490 155 L 610 155" class="arrow-ci" marker-end="url(#arrowhead-ci)"/>
+  <text x="550" y="150" class="label" text-anchor="middle">webhook trigger</text>
+
+  <!-- STAGING ENVIRONMENT -->
+  <text x="60" y="280" class="section-title">STAGING ENVIRONMENT</text>
+  <rect x="40" y="295" width="520" height="180" class="container-box"/>
+
+  <rect x="60" y="310" width="160" height="140" class="box"/>
+  <text x="140" y="330" class="title" text-anchor="middle">Load Balancer</text>
+  <text x="140" y="350" class="label" text-anchor="middle">Cloud Run / App Engine</text>
+  <text x="140" y="370" class="label" text-anchor="middle">Auto-scale: 1-5</text>
+  <text x="140" y="390" class="label" text-anchor="middle">Health check: /health</text>
+
+  <rect x="240" y="310" width="160" height="140" class="box"/>
+  <text x="320" y="330" class="title" text-anchor="middle">FastAPI Container</text>
+  <text x="320" y="350" class="label" text-anchor="middle">Docker image</text>
+  <text x="320" y="370" class="label" text-anchor="middle">Port 8000 exposed</text>
+  <text x="320" y="390" class="label" text-anchor="middle">Env: STAGING</text>
+
+  <rect x="420" y="310" width="120" height="140" class="box"/>
+  <text x="480" y="330" class="title" text-anchor="middle">Streamlit</text>
+  <text x="480" y="350" class="label" text-anchor="middle">Container</text>
+  <text x="480" y="370" class="label" text-anchor="middle">Port 8501</text>
+  <text x="480" y="390" class="label" text-anchor="middle">Env: STAGING</text>
+
+  <!-- PRODUCTION ENVIRONMENT -->
+  <text x="620" y="280" class="section-title">PRODUCTION ENVIRONMENT</text>
+  <rect x="600" y="295" width="560" height="180" class="container-box"/>
+
+  <rect x="620" y="310" width="140" height="140" class="box"/>
+  <text x="690" y="330" class="title" text-anchor="middle">CDN/Gateway</text>
+  <text x="690" y="350" class="label" text-anchor="middle">CloudFlare / API</text>
+  <text x="690" y="370" class="label" text-anchor="middle">Gateway</text>
+  <text x="690" y="390" class="label" text-anchor="middle">Rate limit: 100/min</text>
+
+  <rect x="780" y="310" width="150" height="140" class="box"/>
+  <text x="855" y="330" class="title" text-anchor="middle">FastAPI Cluster</text>
+  <text x="855" y="350" class="label" text-anchor="middle">Cloud Run / K8s</text>
+  <text x="855" y="370" class="label" text-anchor="middle">Auto-scale: 5-50</text>
+  <text x="855" y="390" class="label" text-anchor="middle">Multi-region</text>
+
+  <rect x="950" y="310" width="150" height="140" class="box"/>
+  <text x="1025" y="330" class="title" text-anchor="middle">Streamlit Cloud</text>
+  <text x="1025" y="350" class="label" text-anchor="middle">Managed</text>
+  <text x="1025" y="370" class="label" text-anchor="middle">Auto-deploy</text>
+  <text x="1025" y="390" class="label" text-anchor="middle">SSL/TLS: ✓</text>
+
+  <!-- SHARED SERVICES -->
+  <text x="60" y="550" class="section-title">SHARED SERVICES (BOTH ENVS)</text>
+
+  <!-- Vector Store -->
+  <rect x="40" y="565" width="180" height="120" class="box"/>
+  <text x="130" y="585" class="title" text-anchor="middle">Vector Store</text>
+  <rect x="55" y="600" width="150" height="70" class="box box-secondary"/>
+  <text x="130" y="620" class="label text-light" text-anchor="middle">Option 1: Pinecone</text>
+  <text x="130" y="635" class="label text-light" text-anchor="middle">(Managed, scalable)</text>
+  <text x="130" y="655" class="label text-light" text-anchor="middle">Option 2: Weaviate</text>
+  <text x="130" y="670" class="label text-light" text-anchor="middle">(Self-hosted)</text>
+
+  <!-- Database -->
+  <rect x="250" y="565" width="180" height="120" class="box"/>
+  <text x="340" y="585" class="title" text-anchor="middle">Database</text>
+  <rect x="265" y="600" width="150" height="70" class="box box-secondary"/>
+  <text x="340" y="620" class="label text-light" text-anchor="middle">PostgreSQL</text>
+  <text x="340" y="635" class="label text-light" text-anchor="middle">(Cloud SQL)</text>
+  <text x="340" y="655" class="label text-light" text-anchor="middle">Sessions, Tickets,</text>
+  <text x="340" y="670" class="label text-light" text-anchor="middle">Analytics</text>
+
+  <!-- Cache -->
+  <rect x="460" y="565" width="180" height="120" class="box"/>
+  <text x="550" y="585" class="title" text-anchor="middle">Cache Layer</text>
+  <rect x="475" y="600" width="150" height="70" class="box box-secondary"/>
+  <text x="550" y="620" class="label text-light" text-anchor="middle">Redis</text>
+  <text x="550" y="635" class="label text-light" text-anchor="middle">(Cloud Memorystore)</text>
+  <text x="550" y="655" class="label text-light" text-anchor="middle">Session cache,</text>
+  <text x="550" y="670" class="label text-light" text-anchor="middle">Rate limiting</text>
+
+  <!-- Monitoring -->
+  <rect x="670" y="565" width="180" height="120" class="box"/>
+  <text x="760" y="585" class="title" text-anchor="middle">Monitoring</text>
+  <rect x="685" y="600" width="150" height="70" class="box box-secondary"/>
+  <text x="760" y="620" class="label text-light" text-anchor="middle">DataDog / New Relic</text>
+  <text x="760" y="635" class="label text-light" text-anchor="middle">Metrics, Logs,</text>
+  <text x="760" y="655" class="label text-light" text-anchor="middle">Alerts, APM</text>
+  <text x="760" y="670" class="label text-light" text-anchor="middle">SLA: 99.9%</text>
+
+  <!-- API Keys -->
+  <rect x="880" y="565" width="180" height="120" class="box"/>
+  <text x="970" y="585" class="title" text-anchor="middle">Secrets Manager</text>
+  <rect x="895" y="600" width="150" height="70" class="box box-danger"/>
+  <text x="970" y="620" class="label text-light" text-anchor="middle">AWS Secrets / GCP</text>
+  <text x="970" y="635" class="label text-light" text-anchor="middle">Secret Manager</text>
+  <text x="970" y="655" class="label text-light" text-anchor="middle">• OPENAI_API_KEY</text>
+  <text x="970" y="670" class="label text-light" text-anchor="middle">• DB passwords</text>
+
+  <!-- Arrows from Staging to Services -->
+  <path d="M 300 475 L 130 565" class="arrow" stroke-width="1.5"/>
+  <path d="M 300 475 L 340 565" class="arrow" stroke-width="1.5"/>
+  <path d="M 300 475 L 550 565" class="arrow" stroke-width="1.5"/>
+  <path d="M 300 475 L 760 565" class="arrow" stroke-width="1.5"/>
+  <path d="M 300 475 L 970 565" class="arrow" stroke-width="1.5"/>
+
+  <!-- Arrows from Production to Services -->
+  <path d="M 750 475 L 130 565" class="arrow" stroke-width="1.5"/>
+  <path d="M 750 475 L 340 565" class="arrow" stroke-width="1.5"/>
+  <path d="M 750 475 L 550 565" class="arrow" stroke-width="1.5"/>
+  <path d="M 750 475 L 760 565" class="arrow" stroke-width="1.5"/>
+  <path d="M 750 475 L 970 565" class="arrow" stroke-width="1.5"/>
+
+  <!-- DEPLOYMENT FLOW -->
+  <text x="60" y="760" class="section-title">DEPLOYMENT FLOW</text>
+
+  <rect x="40" y="780" width="140" height="60" class="box box-accent"/>
+  <text x="110" y="800" class="title text-light" text-anchor="middle">1. Push to</text>
+  <text x="110" y="820" class="title text-light" text-anchor="middle">GitHub</text>
+
+  <path d="M 180 810 L 220 810" class="arrow-ci"/>
+
+  <rect x="220" y="780" width="140" height="60" class="box box-purple"/>
+  <text x="290" y="800" class="title text-light" text-anchor="middle">2. GitHub</text>
+  <text x="290" y="820" class="title text-light" text-anchor="middle">Actions runs</text>
+
+  <path d="M 360 810 L 400 810" class="arrow-ci"/>
+
+  <rect x="400" y="780" width="140" height="60" class="box box-purple"/>
+  <text x="470" y="800" class="title text-light" text-anchor="middle">3. Build Docker</text>
+  <text x="470" y="820" class="title text-light" text-anchor="middle">image</text>
+
+  <path d="M 540 810 L 580 810" class="arrow-ci"/>
+
+  <rect x="580" y="780" width="140" height="60" class="box box-secondary"/>
+  <text x="650" y="800" class="title text-light" text-anchor="middle">4. Deploy to</text>
+  <text x="650" y="820" class="title text-light" text-anchor="middle">Staging</text>
+
+  <path d="M 720 810 L 760 810" class="arrow-ci"/>
+
+  <rect x="760" y="780" width="140" height="60" class="box box-primary"/>
+  <text x="830" y="800" class="title text-light" text-anchor="middle">5. Manual</text>
+  <text x="830" y="820" class="title text-light" text-anchor="middle">Approve</text>
+
+  <path d="M 900 810 L 940 810" class="arrow-ci"/>
+
+  <rect x="940" y="780" width="140" height="60" class="box box-secondary"/>
+  <text x="1010" y="800" class="title text-light" text-anchor="middle">6. Deploy to</text>
+  <text x="1010" y="820" class="title text-light" text-anchor="middle">Production</text>
+
+  <!-- CLOUD PROVIDER OPTIONS -->
+  <text x="60" y="920" class="section-title">CLOUD PROVIDER OPTIONS</text>
+
+  <rect x="40" y="935" width="260" height="55" class="box"/>
+  <text x="170" y="950" class="title" text-anchor="middle">AWS</text>
+  <text x="170" y="968" class="label" text-anchor="middle">Lambda + ECR, RDS, ElastiCache, CloudWatch</text>
+
+  <rect x="320" y="935" width="260" height="55" class="box"/>
+  <text x="450" y="950" class="title" text-anchor="middle">Google Cloud</text>
+  <text x="450" y="968" class="label" text-anchor="middle">Cloud Run, Cloud SQL, Memorystore, Cloud Logging</text>
+
+  <rect x="600" y="935" width="260" height="55" class="box"/>
+  <text x="730" y="950" class="title" text-anchor="middle">Azure</text>
+  <text x="730" y="968" class="label" text-anchor="middle">Container Instances, App Service, Cosmos DB, Monitor</text>
+
+  <rect x="880" y="935" width="260" height="55" class="box"/>
+  <text x="1010" y="950" class="title" text-anchor="middle">Heroku / Railway</text>
+  <text x="1010" y="968" class="label" text-anchor="middle">Fully managed, easiest for startups, PostgreSQL included</text>
+</svg>

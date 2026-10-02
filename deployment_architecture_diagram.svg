@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .box { fill: white; stroke: #d1d5db; stroke-width: 2; }
+      .box-primary { fill: #3b82f6; }
+      .box-secondary { fill: #10b981; }
+      .box-accent { fill: #f59e0b; }
+      .box-danger { fill: #ef4444; }
+      .box-purple { fill: #8b5cf6; }
+      .title { font-weight: bold; font-size: 12px; }
+      .label { font-size: 10px; fill: #6b7280; }
+      .text-light { fill: white; }
+      .arrow { stroke: #3b82f6; stroke-width: 2; fill: none; }
+      .arrow-ci { stroke: #f59e0b; stroke-width: 2; fill: none; stroke-dasharray: 4,4; }
+      .layer-title { font-size: 14px; font-weight: bold; fill: #3b82f6; }
+      .section-title { font-size: 13px; font-weight: bold; fill: #10b981; }
+      .container-box { fill: none; stroke: #10b981; stroke-width: 2; stroke-dasharray: 5,5; }
+    </style>
+  </defs>
+  <text x="600" y="30" class="layer-title" text-anchor="middle" font-size="18">Deployment Architecture</text>
+  <text x="60" y="70" class="section-title">Development</text>
+  <rect x="40" y="85" width="220" height="140" class="box"/>
+  <text x="150" y="110" class="title" text-anchor="middle">Local: Python venv</text>
+  <text x="150" y="135" class="label" text-anchor="middle">FastAPI :8000</text>
+  <text x="150" y="155" class="label" text-anchor="middle">Streamlit :8501</text>
+</svg>
