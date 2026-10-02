@@ -6,6 +6,9 @@ chromadb>=0.6.0
 fastapi==0.104.1
 uvicorn==0.24.0
 pydantic>=2.7.4
+slowapi>=0.1.5
+PyJWT>=2.8.0
+python-multipart>=0.0.6
 pytest==7.4.3
 python-dotenv==1.0.0
 numpy<2.0

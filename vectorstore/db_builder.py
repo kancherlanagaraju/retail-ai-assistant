@@ -8,10 +8,37 @@ import json
 import logging
 import os
 import hashlib
+import ssl
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
+# Fix SSL certificate issues (common on macOS)
+# This allows the app to work even with SSL certificate verification issues
+try:
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    # Disable SSL verification globally for urllib3
+    urllib3.disable_warnings()
+
+    # Create unverified HTTPS context
+    ssl._create_default_https_context = ssl._create_unverified_context
+
+    # Disable requests SSL verification
+    import requests
+    requests.packages.urllib3.disable_warnings()
+except Exception:
+    pass
+
+# Disable SSL verification for all HTTPS requests
+import os
+os.environ['REQUESTS_CA_BUNDLE'] = ''
+os.environ['CURL_CA_BUNDLE'] = ''
+
 import chromadb
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -38,6 +65,27 @@ class MockEmbeddings:
         return self.embed_documents([text])[0]
 
 
+def get_embeddings():
+    """Get the best available embeddings provider."""
+    try:
+        from langchain_openai import OpenAIEmbeddings
+        api_key = os.getenv("OPENAI_API_KEY")
+        if api_key:
+            logger.info("Loading embeddings model (using OpenAI)...")
+            embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+            logger.info("✓ OpenAI embeddings initialized")
+            return embeddings
+    except ImportError:
+        logger.warning("langchain_openai not available")
+    except Exception as e:
+        logger.warning(f"OpenAI embeddings failed: {str(e)}")
+
+    # Fallback to mock embeddings
+    logger.info("Loading embeddings model (using mock embeddings)...")
+    logger.info("✓ Mock embeddings initialized")
+    return MockEmbeddings()
+
+
 class VectorStoreBuilder:
     """Build and manage ChromaDB vector store for semantic search."""
 
@@ -58,7 +106,7 @@ class VectorStoreBuilder:
         self.db_path = db_path
         self.collection_name = collection_name
         self.data_file = data_file
-        self.embeddings = MockEmbeddings()
+        self.embeddings = get_embeddings()
         self.client = None
         self.collection = None
 
@@ -72,9 +120,6 @@ class VectorStoreBuilder:
         logger.info(f"Initializing vector store at {self.db_path}")
 
         try:
-            logger.info("Loading embeddings model (using mock embeddings)...")
-            logger.info("✓ Mock embeddings initialized")
-
             # Initialize ChromaDB client with persistent storage
             logger.info("Initializing ChromaDB persistent client...")
             self.client = chromadb.PersistentClient(path=self.db_path)

@@ -91,9 +91,22 @@ LOG_LEVEL=INFO
 ## Running the Application
 
 ### Start the FastAPI Server
+
+**Option 1: Using the run script (Recommended - handles SSL issues)**
+```bash
+./run.sh
+```
+
+**Option 2: Using uvicorn directly**
 ```bash
 # Make sure your virtual environment is activated
 uvicorn api.app:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Option 3: If you encounter SSL issues (macOS)**
+```bash
+# Disable SSL verification (temporary fix)
+PYTHONHTTPSVERIFY=0 uvicorn api.app:app --reload
 ```
 
 **On first run:** The application will automatically initialize the vector store from `data/synthetic_datasets.json` (takes ~5-10 seconds). Subsequent runs will use the cached vector store.
@@ -118,6 +131,37 @@ pytest tests/test_agent.py -v
 # Run with coverage
 pytest --cov=agent --cov=api tests/
 ```
+
+## Authentication & Security
+
+### JWT Token Authentication
+The API supports optional JWT authentication for production deployments:
+
+**Login to get token:**
+```bash
+curl -X POST http://localhost:8000/login \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "user@example.com"}'
+
+# Response:
+# {"access_token": "eyJhbGc...", "token_type": "bearer", "expires_in": 86400, "user_id": "user@example.com"}
+```
+
+**Use token in subsequent requests:**
+```bash
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"query": "Help with my order"}'
+```
+
+**Configuration:**
+- `REQUIRE_AUTH=false` (default) - Authentication optional, backward compatible
+- `REQUIRE_AUTH=true` (production) - Authentication required on all protected endpoints
+- `JWT_SECRET` - Change this in production!
+- `JWT_EXPIRATION_HOURS` - Token expiration time
+
+---
 
 ## Key Components
 
@@ -172,7 +216,41 @@ mypy .
 
 ## Configuration Management
 
-All configurations are centralized in `config/settings.py`. Key settings include:
+### Environment Variables
+Key environment variables can be configured in `.env`:
+
+```bash
+# API & Server
+OPENAI_API_KEY=your_key_here
+ANTHROPIC_API_KEY=your_key_here
+PORT=8000
+DEBUG=False
+
+# CORS (Security) - Prevent CSRF attacks
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8000
+# Set this to your actual frontend URL(s) in production
+
+# Rate Limiting (Security) - Prevent DoS attacks
+# Format: requests/time_period
+CHAT_RATE_LIMIT=10/minute
+ESCALATION_RATE_LIMIT=30/minute
+HEALTH_RATE_LIMIT=100/minute
+STATUS_RATE_LIMIT=30/minute
+
+# Vector Store
+CHROMA_DB_PATH=./vectorstore/chroma_db
+```
+
+**Rate Limiting Notes:**
+- `/chat` endpoint: Limited to 10 requests/minute per IP (most critical)
+- `/escalation` endpoint: Limited to 30 requests/minute per IP
+- `/health` endpoint: Limited to 100 requests/minute per IP (healthchecks)
+- `/agent/status` endpoint: Limited to 30 requests/minute per IP
+- Adjust these limits based on your production load
+- Returns HTTP 429 (Too Many Requests) when limit exceeded
+
+### Centralized Configuration
+All configurations are also available in `config/settings.py`. Key settings include:
 - API credentials
 - Model parameters
 - Vector store settings
@@ -271,6 +349,37 @@ On first run, the vector store will be initialized at `./vectorstore/chroma_db`:
 # Clear vector store if needed
 rm -rf vectorstore/chroma_db
 ```
+
+### SSL Certificate Error (macOS / Corporate Networks)
+If you see `SSLError: certificate verify failed` when initializing the vector store:
+
+**Quick Fix (Recommended):**
+```bash
+# Use the provided run script (handles SSL automatically)
+./run.sh
+```
+
+**Or run with environment variable:**
+```bash
+PYTHONHTTPSVERIFY=0 uvicorn api.app:app --reload
+```
+
+**Proper Fix (Optional):**
+```bash
+# macOS with Homebrew
+brew install ca-certificates
+export SSL_CERT_FILE=$(brew --prefix)/etc/ca-certificates/cert.pem
+
+# Or use Python's certifi
+export SSL_CERT_FILE=$(python -c "import certifi; print(certifi.where())")
+```
+
+This is a known issue with:
+- Fresh Python installations on macOS
+- Corporate networks with SSL interception
+- System without proper CA certificates
+
+The app continues to work even if SSL verification fails - it just uses escalation instead of RAG retrieval.
 
 ## License
 
